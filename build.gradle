@@ -4,6 +4,7 @@ plugins {
 }
 apply plugin: 'java'
 apply from: 'release.gradle'
+apply from: 'quality.gradle'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 description = 'EPAM Report portal. Log4j Intergration'

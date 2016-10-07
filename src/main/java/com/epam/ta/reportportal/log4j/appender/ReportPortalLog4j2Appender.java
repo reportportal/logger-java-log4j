@@ -20,9 +20,9 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
-
 import java.io.File;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.UUID;
 
@@ -77,8 +77,8 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 	}
 
 	@PluginFactory
-	public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name,
-			@PluginElement("filter") Filter filter, @PluginElement("layout") Layout<? extends Serializable> layout) {
+	public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name, @PluginElement("filter") Filter filter,
+			@PluginElement("layout") Layout<? extends Serializable> layout) {
 		if (name == null) {
 			LOGGER.error("No name provided for ReportPortalLog4j2Appender");
 			return null;
@@ -126,24 +126,22 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 				message = messageParser.parse(eventMessage.getFormattedMessage());
 				newLogMessage = message.getMessage();
 			} else if (eventMessage instanceof SimpleMessage) {
-				newLogMessage = new String(getLayout().toByteArray(event));
+				newLogMessage = new String(getLayout().toByteArray(event), Charset.forName("UTF-8"));
 			}
 
-			SaveLogRQ saveLogRQ = buildSaveLogRQ(event, currentItemId, newLogMessage,
-					message == null ? null : message.getData());
+			SaveLogRQ saveLogRQ = buildSaveLogRQ(event, currentItemId, newLogMessage, message == null ? null : message.getData());
 			AppenderUtils.sendLogToRP(reportPortalService, saveLogRQ);
 
 		} catch (RuntimeException e) {
 			/*
 			 * Try to find out initialization problems
 			 */
-			e.printStackTrace(); //NOSONAR
+			e.printStackTrace(); // NOSONAR
 			throw e;
 		}
 	}
 
-	private static SaveLogRQ buildSaveLogRQ(LogEvent event, String currentItemId, String message,
-			final ByteSource data) {
+	private static SaveLogRQ buildSaveLogRQ(LogEvent event, String currentItemId, String message, final ByteSource data) {
 		SaveLogRQ saveLogRQ = new SaveLogRQ();
 		saveLogRQ.setMessage(message);
 		saveLogRQ.setLogTime(new Date(event.getTimeMillis()));
