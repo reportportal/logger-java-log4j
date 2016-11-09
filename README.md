@@ -24,7 +24,7 @@ Just add Report Rortal appender into `log4j.xml` configuration file.
 #### Property file config 
 
 For log4j.properties file it could be looks like:
-```shell
+```properties
 log4j.appender.reportportal=com.epam.ta.reportportal.log4j.appender.ReportPortalAppender
 log4j.appender.reportportal.layout=org.apache.log4j.PatternLayout
 log4j.appender.reportportal.layout.ConversionPattern=[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n
