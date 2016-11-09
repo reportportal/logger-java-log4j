@@ -12,7 +12,7 @@ Just add Report Rortal appender into `log4j.xml` configuration file.
       <param name="ConversionPattern" value="[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n"/>
    </layout>
 </appender>
-<logger name="com.epam.ta.apache">
+<logger name="com.epam.reportportal.apache">
    <level value="OFF"/>
 </logger>
 <root>
@@ -25,7 +25,7 @@ Just add Report Rortal appender into `log4j.xml` configuration file.
 
 For log4j.properties file it could be looks like:
 ```properties
-log4j.appender.reportportal=com.epam.ta.reportportal.log4j.appender.ReportPortalAppender
+log4j.appender.reportportal=com.epam.reportportal.log4j.appender.ReportPortalAppender
 log4j.appender.reportportal.layout=org.apache.log4j.PatternLayout
 log4j.appender.reportportal.layout.ConversionPattern=[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n
 ```
@@ -68,7 +68,7 @@ There is client parameter into `reportportal.properties` with `boolean` type val
 
 **reportportal.properties**
 ```properties
-com.epam.ta.reportportal.ws.convertimage=true
+rp.convertimage=true
 ```
 
  Possible values:
