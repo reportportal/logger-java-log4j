@@ -7,7 +7,7 @@ Log4j provides configuration opportunity via XML or properties files.
 #### XML config 
 Just add Report Rortal appender into `log4j.xml` configuration file.
 ```xml
-<appender name="ReportPortalAppender" class="com.epam.ta.reportportal.log4j.appender.ReportPortalAppender">
+<appender name="ReportPortalAppender" class="com.epam.reportportal.log4j.appender.ReportPortalAppender">
    <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n"/>
    </layout>
