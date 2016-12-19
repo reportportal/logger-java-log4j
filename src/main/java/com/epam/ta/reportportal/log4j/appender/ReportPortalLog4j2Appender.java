@@ -105,7 +105,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 			reportPortalService = this.reportPortalService.get();
 			messageParser = this.messageParser.get();
 			ReportPortalMessage message = null;
-			String newLogMessage = null;
+			String newLogMessage;
 
 			Message eventMessage = event.getMessage();
 
@@ -122,10 +122,11 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 				} else {
 					newLogMessage = objectMessage == null ? null : objectMessage.toString();
 				}
+			//TODO does it really should be only SimpleMessage?
 			} else if (eventMessage instanceof SimpleMessage && messageParser.supports(eventMessage.getFormattedMessage())) {
 				message = messageParser.parse(eventMessage.getFormattedMessage());
 				newLogMessage = message.getMessage();
-			} else if (eventMessage instanceof SimpleMessage) {
+			} else {
 				newLogMessage = new String(getLayout().toByteArray(event), Charset.forName("UTF-8"));
 			}
 
