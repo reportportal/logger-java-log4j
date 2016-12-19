@@ -76,3 +76,10 @@ rp.convertimage=true
 `true` - all images will be converted into `grayscale`
 
 `false` - all images will be as `color`
+
+## Troubleshooting
+
+In some cases `log4j` can't find all enabled Appenders.
+
+please follow with Shaded Plugin to avoid this issue: 
+https://github.com/edwgiz/maven-shaded-log4j-transformer
