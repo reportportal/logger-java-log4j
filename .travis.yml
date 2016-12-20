@@ -1,6 +1,6 @@
 language: java
 
-script: ./gradlew build
+script: gradle build
 
 jdk:
   - openjdk6
