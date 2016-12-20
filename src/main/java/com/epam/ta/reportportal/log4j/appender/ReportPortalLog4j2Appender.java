@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.common.base.Charsets;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -129,7 +130,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 					message = messageParser.parse(formattedMessage);
 					newLogMessage = message.getMessage();
 				} else {
-					newLogMessage = new String(getLayout().toByteArray(event), Charset.forName("UTF-8"));
+					newLogMessage = new String(getLayout().toByteArray(event), Charsets.UTF_8);
 				}
 			}
 
