@@ -123,11 +123,14 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 					newLogMessage = objectMessage == null ? null : objectMessage.toString();
 				}
 
-			} else if (messageParser.supports(eventMessage.getFormattedMessage())) {
-				message = messageParser.parse(eventMessage.getFormattedMessage());
-				newLogMessage = message.getMessage();
 			} else {
-				newLogMessage = new String(getLayout().toByteArray(event), Charset.forName("UTF-8"));
+				String formattedMessage = eventMessage.getFormattedMessage();
+				if (messageParser.supports(formattedMessage)) {
+					message = messageParser.parse(formattedMessage);
+					newLogMessage = message.getMessage();
+				} else {
+					newLogMessage = new String(getLayout().toByteArray(event), Charset.forName("UTF-8"));
+				}
 			}
 
 			SaveLogRQ saveLogRQ = buildSaveLogRQ(event, currentItemId, newLogMessage, message == null ? null : message.getData());
