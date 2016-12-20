@@ -1,9 +1,8 @@
 language: java
 
-script: gradle build
+script: ./gradlew build
 
 jdk:
-  - openjdk6
   - oraclejdk7
   - oraclejdk8
 
