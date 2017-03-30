@@ -53,7 +53,6 @@ public class ReportPortalAppender extends AppenderSkeleton {
         }
 
         ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
-            @Nonnull
             @Override
             public SaveLogRQ apply(@Nullable String itemId) {
 
