@@ -38,6 +38,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import rp.com.google.common.base.Function;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
     public void append(final LogEvent event) {
 
         ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
-            @Nullable
+            @Nonnull
             @Override
             public SaveLogRQ apply(@Nullable String s) {
                 SaveLogRQ rq = new SaveLogRQ();
