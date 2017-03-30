@@ -20,138 +20,114 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
-import java.io.File;
-
-import com.epam.reportportal.guice.Injector;
-import com.epam.reportportal.listeners.ReportPortalListenerContext;
+import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
 import com.epam.reportportal.message.MessageParser;
 import com.epam.reportportal.message.ReportPortalMessage;
-import com.epam.reportportal.service.BatchedReportPortalService;
-import com.google.common.base.Supplier;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
-
-
+import com.epam.reportportal.service.ReportPortal;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
-import com.google.common.base.Suppliers;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
+import rp.com.google.common.base.Function;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Log4j appender for report portal
- * 
+ *
  * @author Andrei Varabyeu
- * 
  */
 public class ReportPortalAppender extends AppenderSkeleton {
 
-	private static final Logger LOGGER = Logger.getLogger(ReportPortalAppender.class);
+    private static final MessageParser MESSAGE_PARSER = new HashMarkSeparatedMessageParser();
 
-	private Supplier<BatchedReportPortalService> reportPortalService;
-	private Supplier<MessageParser> messageParser;
+    @Override
+    protected void append(final LoggingEvent event) {
 
-	/**
-	 * Dirty hack. Do not call to singleton injector in moment of creation this
-	 * object. Some kind of lazy initialiation to avoid creating new singleton
-	 * instance for another classloader
-	 */
-	public ReportPortalAppender() {
-		this(new Supplier<BatchedReportPortalService>() {
-			@Override
-			public BatchedReportPortalService get() {
-				return Injector.getInstance().getBean(BatchedReportPortalService.class);
-			}
-		}, new Supplier<MessageParser>() {
-			@Override
-			public MessageParser get() {
-				return Injector.getInstance().getBean(MessageParser.class);
-			}
-		});
+        if (null == event.getMessage()) {
+            return;
+        }
 
-	}
+        ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
+            @Nullable
+            @Override
+            public SaveLogRQ apply(@Nullable String itemId) {
 
-	public ReportPortalAppender(Supplier<BatchedReportPortalService> reportPortalService, Supplier<MessageParser> messageParser) {
-		/**
-		 * USE ReportPortal Services only via suppliers! <br>
-		 * If not, log4j forces creatition of provided objects via his own
-		 * classloader which is reason of having several singleton objects (one
-		 * object for one classloader) <br>
-		 * Also, We have to memoize suppliers to avoid creating new instances
-		 */
-		this.reportPortalService = Suppliers.memoize(reportPortalService);
-		this.messageParser = Suppliers.memoize(messageParser);
-	}
+                SaveLogRQ rq = new SaveLogRQ();
+                rq.setLevel(event.getLevel().toString());
+                rq.setLogTime(new Date(event.getTimeStamp()));
+                rq.setTestItemId(itemId);
 
-	@Override
-	protected void append(LoggingEvent event) {
+                String logMessage = null;
+                try {
+                    ReportPortalMessage message = null;
 
-		String currentItemId = ReportPortalListenerContext.getRunningNowItemId();
-		StringBuilder throwable = new StringBuilder();
-		if (null == currentItemId) {
-			return;
-		}
+                    /*
+                    * If additional parameter used in logger, for example:
+		            * org.apache.log4j.Logger.debug("message", new Throwable()); Then add
+		            * stack-trace to logged message string
+		            */
+                    StringBuilder throwable = new StringBuilder();
+                    if (null != event.getThrowableInformation()) {
+                        for (String oneLine : event.getThrowableStrRep())
+                            throwable.append(oneLine);
+                    }
 
-		if (null == event.getMessage()) {
-			return;
-		}
+                    // ReportPortalMessage is reported
+                    if (ReportPortalMessage.class.equals(event.getMessage().getClass())) {
+                        message = (ReportPortalMessage) event.getMessage();
 
-		/*
-		 * If additional parameter used in logger, for example:
-		 * org.apache.log4j.Logger.debug("message", new Throwable()); Then add
-		 * stack-trace to logged message string
-		 */
-		if (null != event.getThrowableInformation()) {
-			for (String oneLine : event.getThrowableStrRep())
-				throwable.append(oneLine);
-		}
+                        // File is reported
+                    } else if (File.class.equals(event.getMessage().getClass())) {
+                        message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
 
-		MessageParser messageParser;
-		BatchedReportPortalService reportPortalService;
-		try {
-			messageParser = this.messageParser.get();
-			reportPortalService = this.reportPortalService.get();
+                        // Parsable String is reported
+                    } else if (String.class.equals(event.getMessage().getClass()) && MESSAGE_PARSER
+                            .supports((String) event.getMessage())) {
+                        message = MESSAGE_PARSER.parse((String) event.getMessage());
+                    }
 
-			ReportPortalMessage message = null;
+                    // There is some binary data reported
+                    if (null != message) {
+                        logMessage = message.getMessage();
 
-			if (ReportPortalMessage.class.equals(event.getMessage().getClass())) {
-				message = (ReportPortalMessage) event.getMessage();
-				event = AppenderUtils.buildNewEvent(event, message.getMessage());
-			} else if (File.class.equals(event.getMessage().getClass())) {
-				message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
-				event = AppenderUtils.buildNewEvent(event, message.getMessage());
+                        SaveLogRQ.File file = new SaveLogRQ.File();
+                        file.setContentType(message.getData().getMediaType());
+                        file.setContent(message.getData().read());
+                        file.setName(UUID.randomUUID().toString());
+                        rq.setFile(file);
 
-			} else if (String.class.equals(event.getMessage().getClass()) && messageParser.supports((String) event.getMessage())) {
-				message = messageParser.parse((String) event.getMessage());
-				event = AppenderUtils.buildNewEvent(event, message.getMessage());
-			}
+                    } else {
+                        // Plain string message is reported
+                        if (ReportPortalAppender.this.layout == null) {
+                            logMessage = event.getRenderedMessage();
+                        } else {
+                            logMessage = ReportPortalAppender.this.layout.format(event).concat(throwable.toString());
+                        }
+                    }
 
-			String logMessage;
-			if (this.layout == null) {
-				logMessage = event.getRenderedMessage();
-			} else {
-				logMessage = this.layout.format(event);
-			}
+                } catch (IOException e) {
+                    //do nothing
+                }
 
-			logMessage = logMessage.concat(throwable.toString());
-			SaveLogRQ saveLogRQ = AppenderUtils
-					.buildSaveLogRQ(event, currentItemId, logMessage, message == null ? null : message.getData());
+                rq.setMessage(logMessage);
+                return rq;
 
-			AppenderUtils.sendLogToRP(reportPortalService, saveLogRQ);
+            }
+        });
 
-		} catch (RuntimeException e) {
-			/* DO NOT use printStackTrace! */
-			// e.printStackTrace();
-			LOGGER.error("ReportPortalAppender.append() exception.", e);
-			throw e;
-		}
-	}
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public void close() {
+    }
 
-	@Override
-	public boolean requiresLayout() {
-		return true;
-	}
+    @Override
+    public boolean requiresLayout() {
+        return true;
+    }
 
 }

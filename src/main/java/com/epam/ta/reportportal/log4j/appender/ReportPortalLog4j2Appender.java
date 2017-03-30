@@ -20,13 +20,12 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
-import java.io.File;
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.UUID;
-
-import com.google.common.base.Charsets;
+import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
+import com.epam.reportportal.message.MessageParser;
+import com.epam.reportportal.message.ReportPortalMessage;
+import com.epam.reportportal.message.TypeAwareByteSource;
+import com.epam.reportportal.service.ReportPortal;
+import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -37,17 +36,17 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.SimpleMessage;
+import rp.com.google.common.base.Function;
 
-import com.epam.reportportal.guice.Injector;
-import com.epam.reportportal.listeners.ReportPortalListenerContext;
-import com.epam.reportportal.message.MessageParser;
-import com.epam.reportportal.message.ReportPortalMessage;
-import com.epam.reportportal.service.BatchedReportPortalService;
-import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.io.ByteSource;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
+
+import static com.epam.reportportal.utils.MimeTypeDetector.detect;
+import static rp.com.google.common.io.Files.asByteSource;
 
 /**
  * Log4j2 appender for report portal
@@ -57,108 +56,90 @@ import com.google.common.io.ByteSource;
 @Plugin(name = "ReportPortalLog4j2Appender", category = "Core", elementType = "appender", printObject = true)
 public class ReportPortalLog4j2Appender extends AbstractAppender {
 
-	private Supplier<BatchedReportPortalService> reportPortalService;
-	private Supplier<MessageParser> messageParser;
+    private static final MessageParser MESSAGE_PARSER = new HashMarkSeparatedMessageParser();
 
-	protected ReportPortalLog4j2Appender(String name, Filter filter, Layout<? extends Serializable> layout) {
-		super(name, filter, layout);
-		this.reportPortalService = Suppliers.memoize(new Supplier<BatchedReportPortalService>() {
-			@Override
-			public BatchedReportPortalService get() {
-				return Injector.getInstance().getBean(BatchedReportPortalService.class);
-			}
-		});
-		this.messageParser = Suppliers.memoize(new Supplier<MessageParser>() {
-			@Override
-			public MessageParser get() {
-				return Injector.getInstance().getBean(MessageParser.class);
-			}
-		});
+    protected ReportPortalLog4j2Appender(String name, Filter filter, Layout<? extends Serializable> layout) {
+        super(name, filter, layout);
+    }
 
-	}
+    @PluginFactory
+    public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name,
+            @PluginElement("filter") Filter filter,
+            @PluginElement("layout") Layout<? extends Serializable> layout) {
 
-	@PluginFactory
-	public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name, @PluginElement("filter") Filter filter,
-			@PluginElement("layout") Layout<? extends Serializable> layout) {
-		if (name == null) {
-			LOGGER.error("No name provided for ReportPortalLog4j2Appender");
-			return null;
-		}
+        if (name == null) {
+            LOGGER.error("No name provided for ReportPortalLog4j2Appender");
+            return null;
+        }
 
-		if (layout == null) {
-			LOGGER.error("No layout provided for ReportPortalLog4j2Appender");
-			return null;
-		}
-		return new ReportPortalLog4j2Appender(name, filter, layout);
-	}
+        if (layout == null) {
+            LOGGER.error("No layout provided for ReportPortalLog4j2Appender");
+            return null;
+        }
+        return new ReportPortalLog4j2Appender(name, filter, layout);
+    }
 
-	@Override
-	public void append(LogEvent event) {
-		String currentItemId = ReportPortalListenerContext.getRunningNowItemId();
-		if (null == currentItemId) {
-			return;
-		}
+    @Override
+    public void append(final LogEvent event) {
 
-		BatchedReportPortalService reportPortalService;
-		MessageParser messageParser;
-		try {
+        ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
+            @Nullable
+            @Override
+            public SaveLogRQ apply(@Nullable String s) {
+                SaveLogRQ rq = new SaveLogRQ();
+                rq.setLogTime(new Date(event.getTimeMillis()));
+                rq.setLevel(event.getLevel().name());
 
-			reportPortalService = this.reportPortalService.get();
-			messageParser = this.messageParser.get();
-			ReportPortalMessage message = null;
-			String newLogMessage;
+                Message eventMessage = event.getMessage();
 
-			Message eventMessage = event.getMessage();
+                TypeAwareByteSource byteSource = null;
+                String message = "";
 
-			if ((eventMessage instanceof ObjectMessage) && (eventMessage.getParameters().length > 0)) {
+                try {
+                    if ((eventMessage instanceof ObjectMessage) && (eventMessage.getParameters().length > 0)) {
 
-				Object objectMessage = eventMessage.getParameters()[0];
+                        Object objectMessage = eventMessage.getParameters()[0];
 
-				if (objectMessage instanceof ReportPortalMessage) {
-					message = (ReportPortalMessage) objectMessage;
-					newLogMessage = message.getMessage();
-				} else if (objectMessage instanceof File) {
-					message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
-					newLogMessage = message.getMessage();
-				} else {
-					newLogMessage = objectMessage == null ? null : objectMessage.toString();
-				}
+                        if (objectMessage instanceof ReportPortalMessage) {
+                            ReportPortalMessage rpMessage = (ReportPortalMessage) objectMessage;
+                            byteSource = rpMessage.getData();
+                            message = rpMessage.getMessage();
+                        } else if (objectMessage instanceof File) {
+                            final File file = (File) event.getMessage();
+                            byteSource = new TypeAwareByteSource(asByteSource(file), detect(file));
+                            message = "File reported";
 
-			} else {
-				String formattedMessage = eventMessage.getFormattedMessage();
-				if (messageParser.supports(formattedMessage)) {
-					message = messageParser.parse(formattedMessage);
-					newLogMessage = message.getMessage();
-				} else {
-					newLogMessage = new String(getLayout().toByteArray(event), Charsets.UTF_8);
-				}
-			}
+                        } else {
+                            if (null != objectMessage) {
+                                message = objectMessage.toString();
+                            }
+                        }
 
-			SaveLogRQ saveLogRQ = buildSaveLogRQ(event, currentItemId, newLogMessage, message == null ? null : message.getData());
-			AppenderUtils.sendLogToRP(reportPortalService, saveLogRQ);
+                    } else if (MESSAGE_PARSER.supports(eventMessage.getFormattedMessage())) {
+                        ReportPortalMessage rpMessage = MESSAGE_PARSER.parse(eventMessage.getFormattedMessage());
+                        message = rpMessage.getMessage();
+                        byteSource = rpMessage.getData();
+                    } else {
+                        message = new String(getLayout().toByteArray(event));
+                    }
 
-		} catch (RuntimeException e) {
-			/*
-			 * Try to find out initialization problems
-			 */
-			e.printStackTrace(); // NOSONAR
-			throw e;
-		}
-	}
+                    if (null != byteSource) {
+                        SaveLogRQ.File file = new SaveLogRQ.File();
+                        file.setName(UUID.randomUUID().toString());
+                        file.setContentType(byteSource.getMediaType());
+                        file.setContent(byteSource.read());
 
-	private static SaveLogRQ buildSaveLogRQ(LogEvent event, String currentItemId, String message, final ByteSource data) {
-		SaveLogRQ saveLogRQ = new SaveLogRQ();
-		saveLogRQ.setMessage(message);
-		saveLogRQ.setLogTime(new Date(event.getTimeMillis()));
-		saveLogRQ.setTestItemId(currentItemId);
-		saveLogRQ.setLevel(event.getLevel().toString());
+                        rq.setFile(file);
+                    }
+                } catch (IOException e) {
+                    //skip an error. There is some issue with binary data reading
+                }
+                rq.setMessage(message);
 
-		if (null != data) {
-			SaveLogRQ.File file = new SaveLogRQ.File();
-			file.setContent(data);
-			file.setName(UUID.randomUUID().toString());
-			saveLogRQ.setFile(file);
-		}
-		return saveLogRQ;
-	}
+                return rq;
+            }
+        });
+
+    }
+
 }
