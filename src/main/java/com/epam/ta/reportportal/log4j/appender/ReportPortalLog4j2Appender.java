@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 EPAM Systems
+ * Copyright 2017 EPAM Systems
  *
  *
  * This file is part of EPAM Report Portal.
@@ -20,8 +20,6 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
-import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
-import com.epam.reportportal.message.MessageParser;
 import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.reportportal.message.TypeAwareByteSource;
 import com.epam.reportportal.service.ReportPortal;
@@ -57,8 +55,6 @@ import static rp.com.google.common.io.Files.asByteSource;
 @Plugin(name = "ReportPortalLog4j2Appender", category = "Core", elementType = "appender", printObject = true)
 public class ReportPortalLog4j2Appender extends AbstractAppender {
 
-    private static final MessageParser MESSAGE_PARSER = new HashMarkSeparatedMessageParser();
-
     protected ReportPortalLog4j2Appender(String name, Filter filter, Layout<? extends Serializable> layout) {
         super(name, filter, layout);
     }
@@ -82,6 +78,14 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
+
+        if (null == event.getMessage()) {
+            return;
+        }
+        //make sure we are not logging themselves
+        if (Util.isInternal(event.getLoggerName())) {
+            return;
+        }
 
         ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
             @Override
@@ -115,8 +119,8 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
                             }
                         }
 
-                    } else if (MESSAGE_PARSER.supports(eventMessage.getFormattedMessage())) {
-                        ReportPortalMessage rpMessage = MESSAGE_PARSER.parse(eventMessage.getFormattedMessage());
+                    } else if (ReportPortal.isMessageParsable(eventMessage.getFormattedMessage())) {
+                        ReportPortalMessage rpMessage = ReportPortal.parseMessage(eventMessage.getFormattedMessage());
                         message = rpMessage.getMessage();
                         byteSource = rpMessage.getData();
                     } else {

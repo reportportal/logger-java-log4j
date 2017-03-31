@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 EPAM Systems
+ * Copyright 2017 EPAM Systems
  *
  *
  * This file is part of EPAM Report Portal.
@@ -20,8 +20,6 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
-import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
-import com.epam.reportportal.message.MessageParser;
 import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.reportportal.service.ReportPortal;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
@@ -29,7 +27,6 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import rp.com.google.common.base.Function;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
@@ -43,12 +40,15 @@ import java.util.UUID;
  */
 public class ReportPortalAppender extends AppenderSkeleton {
 
-    private static final MessageParser MESSAGE_PARSER = new HashMarkSeparatedMessageParser();
-
     @Override
     protected void append(final LoggingEvent event) {
 
         if (null == event.getMessage()) {
+            return;
+        }
+
+        //make sure we are not logging themselves
+        if (Util.isInternal(event.getLoggerName())) {
             return;
         }
 
@@ -85,9 +85,9 @@ public class ReportPortalAppender extends AppenderSkeleton {
                         message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
 
                         // Parsable String is reported
-                    } else if (String.class.equals(event.getMessage().getClass()) && MESSAGE_PARSER
-                            .supports((String) event.getMessage())) {
-                        message = MESSAGE_PARSER.parse((String) event.getMessage());
+                    } else if (String.class.equals(event.getMessage().getClass()) && ReportPortal
+                            .isMessageParsable((String) event.getMessage())) {
+                        message = ReportPortal.parseMessage((String) event.getMessage());
                     }
 
                     // There is some binary data reported
