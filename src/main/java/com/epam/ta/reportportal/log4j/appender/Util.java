@@ -20,6 +20,9 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
+import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
+import com.epam.reportportal.message.MessageParser;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +31,7 @@ import java.util.List;
  */
 final class Util {
 
+    static final MessageParser MESSAGE_PARSER = new HashMarkSeparatedMessageParser();
     private static final List<String> INTERNAL_PACKAGES = Arrays.asList("rp.", "com.epam.reportportal.");
 
     private Util() {

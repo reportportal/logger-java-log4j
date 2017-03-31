@@ -20,6 +20,8 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
+import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
+import com.epam.reportportal.message.MessageParser;
 import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.reportportal.service.ReportPortal;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
@@ -85,9 +87,8 @@ public class ReportPortalAppender extends AppenderSkeleton {
                         message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
 
                         // Parsable String is reported
-                    } else if (String.class.equals(event.getMessage().getClass()) && ReportPortal
-                            .isMessageParsable((String) event.getMessage())) {
-                        message = ReportPortal.parseMessage((String) event.getMessage());
+                    } else if (String.class.equals(event.getMessage().getClass()) && Util.MESSAGE_PARSER.supports((String) event.getMessage())) {
+                        message = Util.MESSAGE_PARSER.parse((String) event.getMessage());
                     }
 
                     // There is some binary data reported

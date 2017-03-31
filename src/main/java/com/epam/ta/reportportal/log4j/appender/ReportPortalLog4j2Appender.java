@@ -119,8 +119,8 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
                             }
                         }
 
-                    } else if (ReportPortal.isMessageParsable(eventMessage.getFormattedMessage())) {
-                        ReportPortalMessage rpMessage = ReportPortal.parseMessage(eventMessage.getFormattedMessage());
+                    } else if (Util.MESSAGE_PARSER.supports(eventMessage.getFormattedMessage())) {
+                        ReportPortalMessage rpMessage = Util.MESSAGE_PARSER.parse(eventMessage.getFormattedMessage());
                         message = rpMessage.getMessage();
                         byteSource = rpMessage.getData();
                     } else {
