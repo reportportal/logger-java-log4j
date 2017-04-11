@@ -16,8 +16,8 @@ repositories {
     maven { url "http://dl.bintray.com/epam/reportportal" }
 }
 dependencies {
-    compile 'com.epam.reportportal:client-java:3.0.0-BETA-9'
-    compile 'com.epam.reportportal:commons-model:3.0.0-BETA-2'
+    compile 'com.epam.reportportal:client-java:3.0.0-RC1'
+    compile 'com.epam.reportportal:commons-model:3.0.0-RC1'
 
     compileOnly 'log4j:log4j:1.2.17'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.8.1'

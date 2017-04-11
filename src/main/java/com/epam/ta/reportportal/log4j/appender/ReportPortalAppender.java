@@ -20,8 +20,6 @@
  */
 package com.epam.ta.reportportal.log4j.appender;
 
-import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
-import com.epam.reportportal.message.MessageParser;
 import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.reportportal.service.ReportPortal;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
