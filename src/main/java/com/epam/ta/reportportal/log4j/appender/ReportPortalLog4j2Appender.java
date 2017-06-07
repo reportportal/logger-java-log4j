@@ -77,8 +77,9 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
     }
 
     @Override
-    public void append(final LogEvent event) {
+    public void append(final LogEvent logEvent) {
 
+        final LogEvent event = logEvent.toImmutable();
         if (null == event.getMessage()) {
             return;
         }
