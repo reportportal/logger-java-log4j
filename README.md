@@ -18,7 +18,7 @@ Log4j provides configuration opportunity via XML or properties files.
 #### XML config 
 Just add Report Rortal appender into `log4j.xml` configuration file.
 ```xml
-<appender name="ReportPortalAppender" class="com.epam.reportportal.log4j.appender.ReportPortalAppender">
+<appender name="ReportPortalAppender" class="com.epam.ta.reportportal.log4j.appender.ReportPortalAppender">
    <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n"/>
    </layout>
@@ -36,7 +36,7 @@ Just add Report Rortal appender into `log4j.xml` configuration file.
 
 For log4j.properties file it could be looks like:
 ```properties
-log4j.appender.reportportal=com.epam.reportportal.log4j.appender.ReportPortalAppender
+log4j.appender.reportportal=com.epam.ta.reportportal.log4j.appender.ReportPortalAppender
 log4j.appender.reportportal.layout=org.apache.log4j.PatternLayout
 log4j.appender.reportportal.layout.ConversionPattern=[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n
 ```
