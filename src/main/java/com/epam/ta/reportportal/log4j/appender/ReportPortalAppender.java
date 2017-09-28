@@ -77,15 +77,15 @@ public class ReportPortalAppender extends AppenderSkeleton {
                     }
 
                     // ReportPortalMessage is reported
-                    if (ReportPortalMessage.class.equals(event.getMessage().getClass())) {
+                    if (event.getMessage() instanceof ReportPortalMessage) {
                         message = (ReportPortalMessage) event.getMessage();
 
                         // File is reported
-                    } else if (File.class.equals(event.getMessage().getClass())) {
+                    } else if (event.getMessage() instanceof File) {
                         message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
 
                         // Parsable String is reported
-                    } else if (String.class.equals(event.getMessage().getClass()) && Util.MESSAGE_PARSER.supports((String) event.getMessage())) {
+                    } else if (event.getMessage() instanceof String && Util.MESSAGE_PARSER.supports((String) event.getMessage())) {
                         message = Util.MESSAGE_PARSER.parse((String) event.getMessage());
                     }
 
