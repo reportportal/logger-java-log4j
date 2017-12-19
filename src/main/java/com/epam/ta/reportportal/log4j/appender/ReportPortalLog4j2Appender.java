@@ -37,7 +37,6 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import rp.com.google.common.base.Charsets;
 import rp.com.google.common.base.Function;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -90,7 +89,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 
         ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
             @Override
-            public SaveLogRQ apply(@Nullable String itemId) {
+            public SaveLogRQ apply(String itemId) {
                 SaveLogRQ rq = new SaveLogRQ();
                 rq.setTestItemId(itemId);
                 rq.setLogTime(new Date(event.getTimeMillis()));

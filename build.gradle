@@ -14,10 +14,17 @@ description = 'EPAM Report portal. Log4j Intergration'
 repositories {
     jcenter()
     maven { url "http://dl.bintray.com/epam/reportportal" }
+    maven { url "https://jitpack.io" }
 }
 dependencies {
-    compile 'com.epam.reportportal:client-java:3.0.0'
-    compile 'com.epam.reportportal:commons-model:3.0.0'
+//    compile 'com.epam.reportportal:client-java:3.0.0'
+//    compile 'com.epam.reportportal:commons-model:3.0.0'
+    compile ('com.github.reportportal:client-java:e2f08dd') {
+        ext.compileScope = true
+    }
+    compile('com.github.reportportal:commons-model:63cea60') {
+        ext.compileScope = true
+    }
 
     compileOnly 'log4j:log4j:1.2.17'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.8.1'

@@ -27,7 +27,6 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import rp.com.google.common.base.Function;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -54,7 +53,7 @@ public class ReportPortalAppender extends AppenderSkeleton {
 
         ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
             @Override
-            public SaveLogRQ apply(@Nullable String itemId) {
+            public SaveLogRQ apply(String itemId) {
 
                 SaveLogRQ rq = new SaveLogRQ();
                 rq.setLevel(event.getLevel().toString());
