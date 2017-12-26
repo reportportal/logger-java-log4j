@@ -13,10 +13,10 @@
 
 ## Configuration - log4j
 
-Log4j provides configuration opportunity via XML or properties files.
+Log4j provides a configuration opportunity via XML or properties files.
  
 #### XML config 
-Just add Report Rortal appender into `log4j.xml` configuration file.
+Just add a Report Rortal appender into the `log4j.xml` configuration file.
 ```xml
 <appender name="ReportPortalAppender" class="com.epam.ta.reportportal.log4j.appender.ReportPortalAppender">
    <layout class="org.apache.log4j.PatternLayout">
@@ -34,7 +34,7 @@ Just add Report Rortal appender into `log4j.xml` configuration file.
 
 #### Property file config 
 
-For log4j.properties file it could be looks like:
+For the log4j.properties file it could look like:
 ```properties
 log4j.appender.reportportal=com.epam.ta.reportportal.log4j.appender.ReportPortalAppender
 log4j.appender.reportportal.layout=org.apache.log4j.PatternLayout
@@ -42,9 +42,9 @@ log4j.appender.reportportal.layout.ConversionPattern=[%d{HH:mm:ss}] %-5p (%F:%L)
 ```
 
 #### Screenshots
-For log4j case it is possible to send binary data in next ways.
+For the log4j case it is possible to send binary data in next ways.
 
-* by using specific message wrapper
+* by using a specific message wrapper
 
   ```java
   private static Logger logger;
@@ -59,11 +59,11 @@ For log4j case it is possible to send binary data in next ways.
   ReportPortalMessage message = new ReportPortalMessage(new File(screenshot_file_path), rp_message);
   logger.info(message);
   ```
-* sending File object as log4j log message. In this case log4j Report Portal appender send log message which will contain sending file and string message `Binary data reported`.
+* sending a File object as a log4j log message. In this case a log4j Report Portal appender sends a log message which will contain the sending file and the string message `Binary data reported`.
 
-* adding to log message additional text information which specify attaching file location or base64 representation of sending file.
+* adding to the log message additional text information which specifies the attaching file location or the base64 representation of the sending file.
   
-  in this case log message should have next format:
+  in this case a log message should have the next format:
 
   ```properties
   RP_MESSAGE#FILE#FILENAME#MESSAGE_TEST
@@ -75,8 +75,18 @@ For log4j case it is possible to send binary data in next ways.
   ```
 
 #### Grayscale images
-There is client parameter into `reportportal.properties` with `boolean` type value for screenshots sending in `grayscale` or `color` view. By default it is set as `true` and all pictures for Report Portal will be in `grayscale` format.
+There is a client parameter in `reportportal.properties` with the `boolean` type value for screenshots sending in the `grayscale` or `color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
 
+**reportportal.properties**
+```properties
+rp.convertimage=true
+```
+
+ Possible values:
+ 
+`true` - all images will be converted into `grayscale`
+
+`false` - all images will be as `color`
 
 ## Configuration - log4j2
 
@@ -136,7 +146,7 @@ Update `log4j2.json` as follows
 ```
 
 #### Screenshots
-For log4j2 case it is possible to send binary data in next ways.
+For the log4j2 case it is possible to send binary data in the next ways.
 
 * by using specific message wrapper
 
@@ -153,11 +163,11 @@ For log4j2 case it is possible to send binary data in next ways.
   ReportPortalMessage message = new ReportPortalMessage(new File(screenshot_file_path), rp_message);
   logger.info(message);
   ```
-* sending File object as log4j2 log message. In this case log4j2 Report Portal appender send log message which will contain sending file and string message `Binary data reported`.
+* sending a File object as the log4j2 log message. In this case the log4j2 Report Portal appender send a log message which will contain the sending file and the string message `Binary data reported`.
 
-* adding to log message additional text information which specify attaching file location or base64 representation of sending file.
+* adding to the log message additional text information which specifies the attaching file location or the base64 representation of the sending file.
   
-  in this case log message should have next format:
+  in this case a log message should have the next format:
 
   ```properties
   RP_MESSAGE#FILE#FILENAME#MESSAGE_TEST
@@ -169,18 +179,7 @@ For log4j2 case it is possible to send binary data in next ways.
   ```
 
 #### Grayscale images
-There is client parameter into `reportportal.properties` with `boolean` type value for screenshots sending in `grayscale` or `color` view. By default it is set as `true` and all pictures for Report Portal will be in `grayscale` format.
-
-**reportportal.properties**
-```properties
-rp.convertimage=true
-```
-
- Possible values:
- 
-`true` - all images will be converted into `grayscale`
-
-`false` - all images will be as `color`
+There is a client parameter into `reportportal.properties` with the `boolean` type value for screenshots sending in the `grayscale` or `color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
 
 **reportportal.properties**
 ```properties
