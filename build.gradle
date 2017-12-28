@@ -17,12 +17,10 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 dependencies {
-//    compile 'com.epam.reportportal:client-java:3.0.0'
-//    compile 'com.epam.reportportal:commons-model:3.0.0'
-    compile ('com.github.reportportal:client-java:e2f08dd') {
+    compile ('com.epam.reportportal:client-java:4.0.0-BETA-1') {
         ext.compileScope = true
     }
-    compile('com.github.reportportal:commons-model:63cea60') {
+    compile('com.epam.reportportal:commons-model:4.0.0') {
         ext.compileScope = true
     }
 
