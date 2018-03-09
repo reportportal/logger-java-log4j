@@ -39,93 +39,94 @@ import java.util.UUID;
  */
 public class ReportPortalAppender extends AppenderSkeleton {
 
-    @Override
-    protected void append(final LoggingEvent event) {
+	@Override
+	protected void append(final LoggingEvent event) {
 
-        if (null == event.getMessage()) {
-            return;
-        }
+		if (null == event.getMessage()) {
+			return;
+		}
 
-        //make sure we are not logging themselves
-        if (Util.isInternal(event.getLoggerName())) {
-            return;
-        }
+		//make sure we are not logging themselves
+		if (Util.isInternal(event.getLoggerName())) {
+			return;
+		}
 
-        ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
-            @Override
-            public SaveLogRQ apply(String itemId) {
+		ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
+			@Override
+			public SaveLogRQ apply(String itemId) {
 
-                SaveLogRQ rq = new SaveLogRQ();
-                rq.setLevel(event.getLevel().toString());
-                rq.setLogTime(new Date(event.getTimeStamp()));
-                rq.setTestItemId(itemId);
+				SaveLogRQ rq = new SaveLogRQ();
+				rq.setLevel(event.getLevel().toString());
+				rq.setLogTime(new Date(event.getTimeStamp()));
+				rq.setTestItemId(itemId);
 
-                String logMessage = null;
-                try {
-                    ReportPortalMessage message = null;
+				String logMessage = null;
+				try {
+					ReportPortalMessage message = null;
 
-                    /*
-                    * If additional parameter used in logger, for example:
-		            * org.apache.log4j.Logger.debug("message", new Throwable()); Then add
-		            * stack-trace to logged message string
-		            */
-                    StringBuilder throwable = new StringBuilder();
-                    if (null != event.getThrowableInformation()) {
-                        for (String oneLine : event.getThrowableStrRep())
-                            throwable.append(oneLine);
-                    }
+					/*
+					 * If additional parameter used in logger, for example:
+					 * org.apache.log4j.Logger.debug("message", new Throwable()); Then add
+					 * stack-trace to logged message string
+					 */
+					StringBuilder throwable = new StringBuilder();
+					if (null != event.getThrowableInformation()) {
+						for (String oneLine : event.getThrowableStrRep()) {
+							throwable.append(oneLine);
+						}
+					}
 
-                    // ReportPortalMessage is reported
-                    if (event.getMessage() instanceof ReportPortalMessage) {
-                        message = (ReportPortalMessage) event.getMessage();
+					// ReportPortalMessage is reported
+					if (event.getMessage() instanceof ReportPortalMessage) {
+						message = (ReportPortalMessage) event.getMessage();
 
-                        // File is reported
-                    } else if (event.getMessage() instanceof File) {
-                        message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
+						// File is reported
+					} else if (event.getMessage() instanceof File) {
+						message = new ReportPortalMessage((File) event.getMessage(), "Binary data reported");
 
-                        // Parsable String is reported
-                    } else if (event.getMessage() instanceof String && Util.MESSAGE_PARSER.supports((String) event.getMessage())) {
-                        message = Util.MESSAGE_PARSER.parse((String) event.getMessage());
-                    }
+						// Parsable String is reported
+					} else if (event.getMessage() instanceof String && Util.MESSAGE_PARSER.supports((String) event.getMessage())) {
+						message = Util.MESSAGE_PARSER.parse((String) event.getMessage());
+					}
 
-                    // There is some binary data reported
-                    if (null != message) {
-                        logMessage = message.getMessage();
+					// There is some binary data reported
+					if (null != message && null != message.getData()) {
+						logMessage = message.getMessage();
 
-                        SaveLogRQ.File file = new SaveLogRQ.File();
-                        file.setContentType(message.getData().getMediaType());
-                        file.setContent(message.getData().read());
-                        file.setName(UUID.randomUUID().toString());
-                        rq.setFile(file);
+						SaveLogRQ.File file = new SaveLogRQ.File();
+						file.setContentType(message.getData().getMediaType());
+						file.setContent(message.getData().read());
+						file.setName(UUID.randomUUID().toString());
+						rq.setFile(file);
 
-                    } else {
-                        // Plain string message is reported
-                        if (ReportPortalAppender.this.layout == null) {
-                            logMessage = event.getRenderedMessage();
-                        } else {
-                            logMessage = ReportPortalAppender.this.layout.format(event).concat(throwable.toString());
-                        }
-                    }
+					} else {
+						// Plain string message is reported
+						if (ReportPortalAppender.this.layout == null) {
+							logMessage = event.getRenderedMessage();
+						} else {
+							logMessage = ReportPortalAppender.this.layout.format(event).concat(throwable.toString());
+						}
+					}
 
-                } catch (IOException e) {
-                    //do nothing
-                }
+				} catch (IOException e) {
+					//do nothing
+				}
 
-                rq.setMessage(logMessage);
-                return rq;
+				rq.setMessage(logMessage);
+				return rq;
 
-            }
-        });
+			}
+		});
 
-    }
+	}
 
-    @Override
-    public void close() {
-    }
+	@Override
+	public void close() {
+	}
 
-    @Override
-    public boolean requiresLayout() {
-        return true;
-    }
+	@Override
+	public boolean requiresLayout() {
+		return true;
+	}
 
 }
