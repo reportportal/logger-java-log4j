@@ -1,12 +1,12 @@
 apply plugin: 'maven-publish'
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+    archiveClassifier.set('sources')
     from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from javadoc.destinationDir
 }
 
@@ -41,7 +41,7 @@ bintray {
         githubReleaseNotesFile = 'CHANGELOG.md'
 
         userOrg = 'epam'
-        licenses = ['GPL-3.0']
+        licenses = ['Apache-2.0']
     }
 }
 afterReleaseBuild.dependsOn bintrayUpload
