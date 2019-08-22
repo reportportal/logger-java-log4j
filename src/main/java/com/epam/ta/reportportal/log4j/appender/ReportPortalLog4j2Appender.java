@@ -84,9 +84,9 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 
         ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
             @Override
-            public SaveLogRQ apply(String itemId) {
+            public SaveLogRQ apply(String itemUuid) {
                 SaveLogRQ rq = new SaveLogRQ();
-                rq.setItemId(itemId);
+                rq.setItemUuid(itemUuid);
                 rq.setLogTime(new Date(event.getTimeMillis()));
                 rq.setLevel(event.getLevel().name());
 

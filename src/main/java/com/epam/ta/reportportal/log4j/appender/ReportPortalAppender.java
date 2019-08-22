@@ -49,12 +49,12 @@ public class ReportPortalAppender extends AppenderSkeleton {
 
 		ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
 			@Override
-			public SaveLogRQ apply(String itemId) {
+			public SaveLogRQ apply(String itemUuid) {
 
 				SaveLogRQ rq = new SaveLogRQ();
 				rq.setLevel(event.getLevel().toString());
 				rq.setLogTime(new Date(event.getTimeStamp()));
-				rq.setItemId(itemId);
+				rq.setItemUuid(itemUuid);
 
 				String logMessage = null;
 				try {

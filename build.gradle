@@ -22,11 +22,11 @@ repositories {
 }
 dependencies {
     if (releaseMode) {
-        compile 'com.epam.reportportal:client-java:5.0.0-BETA-1'
-        compile 'com.epam.reportportal:commons-model:5.0.0-BETA-7'
+        compile 'com.epam.reportportal:client-java:5.0.0-BETA-2'
+        compile 'com.epam.reportportal:commons-model:5.0.0-BETA-11'
     } else {
-        compile 'com.github.reportportal:commons-model:9f72549'
-        compile 'com.github.reportportal:client-java:9c32e5c'
+        compile 'com.github.reportportal:commons-model:09eeaef'
+        compile 'com.github.reportportal:client-java:6a13615'
     }
 
     compileOnly 'log4j:log4j:1.2.17'
