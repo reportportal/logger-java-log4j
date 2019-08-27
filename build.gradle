@@ -22,16 +22,16 @@ repositories {
 }
 dependencies {
     if (releaseMode) {
-        compile 'com.epam.reportportal:client-java:5.0.0-BETA-2'
+        compile 'com.epam.reportportal:client-java:5.0.0-BETA-4'
         compile 'com.epam.reportportal:commons-model:5.0.0-BETA-11'
     } else {
-        compile 'com.github.reportportal:commons-model:09eeaef'
-        compile 'com.github.reportportal:client-java:6a13615'
+        compile 'com.github.reportportal:client-java:9ede451'
+        compile 'com.github.reportportal:commons-model:2d10629'
     }
 
     compileOnly 'log4j:log4j:1.2.17'
-    compileOnly 'org.apache.logging.log4j:log4j-api:2.12.0'
-    compileOnly 'org.apache.logging.log4j:log4j-core:2.12.0'
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.12.1'
+    compileOnly 'org.apache.logging.log4j:log4j-core:2.12.1'
 }
 
 wrapper {
