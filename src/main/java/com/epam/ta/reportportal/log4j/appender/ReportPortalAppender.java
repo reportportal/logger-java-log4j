@@ -42,11 +42,6 @@ public class ReportPortalAppender extends AppenderSkeleton {
 			return;
 		}
 
-		//make sure we are not logging themselves
-		if (Util.isInternal(event.getLoggerName())) {
-			return;
-		}
-
 		ReportPortal.emitLog(new Function<String, SaveLogRQ>() {
 			@Override
 			public SaveLogRQ apply(String itemId) {

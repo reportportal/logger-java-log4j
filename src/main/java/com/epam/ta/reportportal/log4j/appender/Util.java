@@ -27,22 +27,8 @@ import java.util.List;
 final class Util {
 
     static final MessageParser MESSAGE_PARSER = new HashMarkSeparatedMessageParser();
-    private static final List<String> INTERNAL_PACKAGES = Arrays.asList("rp.", "com.epam.reportportal.");
 
     private Util() {
         //statics only
-    }
-
-    static boolean isInternal(String loggerName) {
-        if (null == loggerName) {
-            return false;
-        }
-
-        for (String packagePrefix : INTERNAL_PACKAGES) {
-            if (loggerName.startsWith(packagePrefix)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
