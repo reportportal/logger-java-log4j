@@ -1,37 +1,30 @@
 plugins {
-    id 'net.researchgate.release' version '2.8.0'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'java'
 }
-apply plugin: 'java'
-apply from: 'quality.gradle'
+apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-quality.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/release-commons.gradle'
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-description = 'EPAM Report portal. Log4j Intergration'
-
-project.ext {
-    releaseMode = project.hasProperty('releaseMode')
-}
+project.ext.releaseMode = project.hasProperty('releaseMode')
 
 repositories {
     jcenter()
-    maven { url "http://dl.bintray.com/epam/reportportal" }
-    maven { url "https://jitpack.io" }
+    releaseMode ? maven { url "http://dl.bintray.com/epam/reportportal" } : maven { url "https://jitpack.io" }
 }
 dependencies {
     if (releaseMode) {
         compile 'com.epam.reportportal:client-java:5.0.0-BETA-4'
-        compile 'com.epam.reportportal:commons-model:5.0.0-BETA-11'
+        compile 'com.epam.reportportal:commons-model:5.0.0-RC-5'
     } else {
-        compile 'com.github.reportportal:client-java:9ede451'
-        compile 'com.github.reportportal:commons-model:2d10629'
+        compile 'com.github.reportportal:client-java:da8fb0f'
+        compile 'com.github.reportportal:commons-model:2f23f50'
     }
 
     compileOnly 'log4j:log4j:1.2.17'
-    compileOnly 'org.apache.logging.log4j:log4j-api:2.12.1'
-    compileOnly 'org.apache.logging.log4j:log4j-core:2.12.1'
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.13.0'
+    compileOnly 'org.apache.logging.log4j:log4j-core:2.13.0'
 }
 
 wrapper {
