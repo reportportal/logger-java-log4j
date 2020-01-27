@@ -77,10 +77,6 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 		if (null == event.getMessage()) {
 			return;
 		}
-		//make sure we are not logging themselves
-		if (Util.isInternal(event.getLoggerName())) {
-			return;
-		}
 
 		emitLog((Function<String, SaveLogRQ>) itemUuid -> {
 			SaveLogRQ request = new SaveLogRQ();
