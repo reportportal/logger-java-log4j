@@ -112,7 +112,8 @@ For the log4j case it is possible to send binary data in next ways.
   ```
   
 #### Grayscale images
-There is a client parameter in `reportportal.properties` with the `boolean` type value for screenshots sending in the `grayscale` or `color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
+There is a client parameter in `reportportal.properties` with the `boolean` type value for screenshots sending in the `grayscale` or 
+`color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
 
 **reportportal.properties**
 ```properties
@@ -181,53 +182,14 @@ Update `log4j2.json` as follows
   }
 }
 ```
-
-#### Screenshots
-For the log4j2 case it is possible to send binary data in the next ways.
-
-* by using specific message wrapper
-
-  ```java
-  private static Logger logger;
-  /*
-   * Path to screenshot file
-   */
-  public String screenshot_file_path = "demoScreenshoot.png";
-  /*
-   * Message for attached screenshot
-   */
-  public String rp_message = "test message for Report Portal";
-  ReportPortalMessage message = new ReportPortalMessage(new File(screenshot_file_path), rp_message);
-  logger.info(message);
-  ```
-* sending a File object as the log4j2 log message. In this case the log4j2 Report Portal appender send a log message which will contain the sending file and the string message `Binary data reported`.
-
-* adding to the log message additional text information which specifies the attaching file location or the base64 representation of the sending file.
-  
-  in this case a log message should have the next format:
-
-  ```properties
-  RP_MESSAGE#FILE#FILENAME#MESSAGE_TEST
-  RP_MESSAGE#BASE64#BASE_64_REPRESENTATION#MESSAGE_TEST
-  RP_MESSAGE - message header
-  FILE, BASE64 - attaching data representation type
-  FILENAME, BASE_64_REPRESENTATION - path to sending file/ base64 representation of sending data
-  MESSAGE_TEST - string log message
-  ```
-
-#### Grayscale images
-There is a client parameter into `reportportal.properties` with the `boolean` type value for screenshots sending in the `grayscale` or `color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
-
-**reportportal.properties**
-```properties
-rp.convertimage=true
+ReportPortal's agent logs can be hided by increasing logging level for the following package:
+```xml
+<Logger name="rp" level="WARN"/>
+<Logger name="com.epam.reportportal" level="WARN"/>
 ```
 
- Possible values:
- 
-`true` - all images will be converted into `grayscale`
-
-`false` - all images will be as `color`
+For the log4j2 case it is possible to send binary data the same ways as for [log4j](#attaching-files).
+Also you can use `rp.convertimage` parameter as described in [grayscale images](#grayscale-images) section.
 
 ## Troubleshooting
 
