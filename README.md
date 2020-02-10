@@ -197,6 +197,10 @@ ReportPortal's agent logs can be hided by increasing logging level for the follo
 For the log4j2 case it is possible to send binary data the same ways as for [log4j](#attaching-files).
 Also you can use `rp.convertimage` parameter as described in [grayscale images](#grayscale-images) section.
 
+## JDK Logging / java.util.logger (JUL)
+Due to low popularity of JUL logger, Report Portal does not have adapter for it. Bridge to SLF4J or Log4j may be used in this case: 
+[Log4j2 JDK Logging Adapter](https://logging.apache.org/log4j/2.0/log4j-jul/index.html)
+
 ## Troubleshooting
 
 In some cases `log4j` can't find all enabled Appenders.
