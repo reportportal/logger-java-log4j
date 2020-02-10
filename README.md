@@ -80,29 +80,34 @@ For the log4j case it is possible to send binary data in next ways.
   RP_MESSAGE#FILE#FILENAME#MESSAGE_TEST
   RP_MESSAGE#BASE64#BASE_64_REPRESENTATION#MESSAGE_TEST
   ```
-  > RP_MESSAGE - message header
-  > FILE, BASE64 - attaching data representation type
-  > FILENAME, BASE_64_REPRESENTATION - path to sending file/ base64 representation of sending data
+  > RP_MESSAGE - message header  
+  
+  > FILE, BASE64 - attaching data representation type  
+                                                                                                                                                                                                                                                                                                                                                                       
+  > FILENAME, BASE_64_REPRESENTATION - path to sending file/ base64 representation of sending data  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
   > MESSAGE_TEST - string log message
 
   ```java
   
+  private static final String JSON_FILE_PATH = "files/file.json"
+  
   @Test
-  public void logJsonBase64() throws IOException {  
-    /* here we are logging some binary data as BASE64 string */
-  		LOGGER.info(
-  		  "RP_MESSAGE#BASE64#{}#{}",
-  				BaseEncoding.base64().encode(Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).read()),
-  				"I'm logging content via BASE64"
-  		  );
+  public void logJsonBase64() throws IOException {
+      /* here we are logging some binary data as BASE64 string */
+      LOGGER.info(
+          "RP_MESSAGE#BASE64#{}#{}",
+          BaseEncoding.base64().encode(Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).read()),
+          "I'm logging content via BASE64"
+      );
   }
       
   @Test
   public void logJsonFile() throws IOException, InterruptedException {
-    /* here we are logging some binary data as file (useful for selenium) */
-    File file = File.createTempFile("rp-test", ".json");
-    Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).copyTo(Files.asByteSink(file));
-    LOGGER.info("RP_MESSAGE#FILE#{}#{}", file.getAbsolutePath(), "I'm logging content via temp file");
+      /* here we are logging some binary data as file (useful for selenium) */
+      File file = File.createTempFile("rp-test", ".json");
+      Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).copyTo(Files.asByteSink(file));
+      LOGGER.info("RP_MESSAGE#FILE#{}#{}", file.getAbsolutePath(), "I'm logging content via temp file");
   }
   ```
 
