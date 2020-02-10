@@ -86,23 +86,24 @@ For the log4j case it is possible to send binary data in next ways.
   > MESSAGE_TEST - string log message
 
   ```java
-      @Test
-  	  public void logJsonBase64() throws IOException {  
-  	      /* here we are logging some binary data as BASE64 string */
-  		  LOGGER.info(
-  				"RP_MESSAGE#BASE64#{}#{}",
+  
+  @Test
+  public void logJsonBase64() throws IOException {  
+    /* here we are logging some binary data as BASE64 string */
+  		LOGGER.info(
+  		  "RP_MESSAGE#BASE64#{}#{}",
   				BaseEncoding.base64().encode(Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).read()),
   				"I'm logging content via BASE64"
   		  );
-      }
+  }
       
-      @Test
-      public void logJsonFile() throws IOException, InterruptedException {
-  	      /* here we are logging some binary data as file (useful for selenium) */
-      	  File file = File.createTempFile("rp-test", ".json");
-      	  Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).copyTo(Files.asByteSink(file));
-      	  LOGGER.info("RP_MESSAGE#FILE#{}#{}", file.getAbsolutePath(), "I'm logging content via temp file");
-      }
+  @Test
+  public void logJsonFile() throws IOException, InterruptedException {
+    /* here we are logging some binary data as file (useful for selenium) */
+    File file = File.createTempFile("rp-test", ".json");
+    Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).copyTo(Files.asByteSink(file));
+    LOGGER.info("RP_MESSAGE#FILE#{}#{}", file.getAbsolutePath(), "I'm logging content via temp file");
+  }
   ```
 
 * Explicit logging. You can call the ReportPortal logger explicitly. To do this consider the following example:
