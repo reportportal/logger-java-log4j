@@ -52,31 +52,7 @@ ReportPortal' agent logs can be hidded by increasing logging level for the follo
 </logger>
 ```
 
-#### Log message format
-ReportPortal allows the attachment of binary data to the log entry. In this case consider the following message format:
-
-```
-RP_MESSAGE#FILE#FILENAME#MESSAGE_TEST
-```
-
-```
-RP_MESSAGE#BASE64#BASE_64_REPRESENTATION#MESSAGE_TEST
-```
-
-
-> RP_MESSAGE - message header
-
-> FILE, BASE64 - attaching data representation type
-
-> FILENAME, BASE_64_REPRESENTATION - path to sending file/ base64 representation of sending data
-
-> MESSAGE_TEST - string log message
-
-***Examples***
-
-
-
-#### Screenshots
+#### Attaching files
 For the log4j case it is possible to send binary data in next ways.
 
 * by using a specific message wrapper
