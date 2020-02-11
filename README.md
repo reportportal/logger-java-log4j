@@ -52,7 +52,7 @@ ReportPortal' agent logs can be hidded by increasing logging level for the follo
 </logger>
 ```
 
-#### Attaching files
+#### Attaching files (Screenshots, videos, archives, reports etc.)
 For the log4j case it is possible to send binary data in next ways.
 
 * by using a specific message wrapper
@@ -194,7 +194,7 @@ ReportPortal's agent logs can be hided by increasing logging level for the follo
 <Logger name="com.epam.reportportal" level="WARN"/>
 ```
 
-For the log4j2 case it is possible to send binary data the same ways as for [log4j](#attaching-files).
+For the log4j2 case it is possible to send binary data the same ways as for [log4j](#attaching-files-screenshots-videos-archives-reports-etc).
 Also you can use `rp.convertimage` parameter as described in [grayscale images](#grayscale-images) section.
 
 ## JDK Logging / java.util.logger (JUL)
