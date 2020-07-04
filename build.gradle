@@ -14,15 +14,26 @@ repositories {
     jcenter()
     releaseMode ? maven { url "http://dl.bintray.com/epam/reportportal" } : maven { url "https://jitpack.io" }
 }
-dependencies {
-    if (releaseMode) {
-        compile 'com.epam.reportportal:client-java:5.0.1'
-        compile 'com.epam.reportportal:commons-model:5.0.0'
-    } else {
-        compile 'com.epam.reportportal:client-java:5.0.1'
-        compile 'com.github.reportportal:commons-model:5.0.0'
-    }
 
+project.ext.githubUserName = project.hasProperty('githubUserName') ? githubUserName : ""
+project.ext.githubToken = project.hasProperty('githubToken') ? githubToken : ""
+
+publishing {
+    repositories {
+        maven {
+            name = "Log4j GitHub Packages"
+            url = uri("https://maven.pkg.github.com/reportportal/logger-java-log4j")
+            credentials {
+                username = githubUserName
+                password = githubToken
+            }
+        }
+    }
+}
+
+dependencies {
+    compile 'com.epam.reportportal:client-java:5.0.2'
+    compile 'com.epam.reportportal:commons-model:5.0.0'
     compileOnly 'log4j:log4j:1.2.17'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.13.0'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.13.0'
@@ -32,4 +43,6 @@ wrapper {
     gradleVersion = '5.4.1'
 }
 
-afterReleaseBuild.dependsOn bintrayUpload
+def releaseDependencies = [bintrayUpload, publish]
+releaseDependencies.addAll(afterReleaseBuild.getDependsOn())
+afterReleaseBuild.setDependsOn(releaseDependencies)
