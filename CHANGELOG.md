@@ -4,7 +4,7 @@
 ### Changed
 - bumping up client version
 
-## 3.0.2
+## [3.0.2]
 ##### Released: 7 Jun 2017
 
 ### Bugfixes
