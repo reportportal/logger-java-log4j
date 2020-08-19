@@ -1,6 +1,5 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java-library'
+
 project.ext.releaseMode = project.hasProperty('releaseMode')
 
 def branch = releaseMode ? '5.0.0' : 'develop'
@@ -32,11 +31,11 @@ publishing {
 }
 
 dependencies {
-    compile 'com.epam.reportportal:client-java:5.0.2'
-    compile 'com.epam.reportportal:commons-model:5.0.0'
-    compileOnly 'log4j:log4j:1.2.17'
-    compileOnly 'org.apache.logging.log4j:log4j-api:2.13.0'
-    compileOnly 'org.apache.logging.log4j:log4j-core:2.13.0'
+    implementation 'com.epam.reportportal:client-java:5.0.6'
+    implementation 'com.epam.reportportal:commons-model:5.0.0'
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'org.apache.logging.log4j:log4j-api:2.13.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.13.0'
 }
 
 wrapper {
@@ -45,4 +44,4 @@ wrapper {
 
 def releaseDependencies = [bintrayUpload, publish]
 releaseDependencies.addAll(afterReleaseBuild.getDependsOn())
-//afterReleaseBuild.setDependsOn(releaseDependencies)
+afterReleaseBuild.setDependsOn(releaseDependencies)

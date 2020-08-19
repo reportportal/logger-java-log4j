@@ -18,6 +18,8 @@ package com.epam.ta.reportportal.log4j.appender;
 import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import rp.com.google.common.base.Throwables;
 
@@ -25,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
-import java.util.function.Function;
 
 import static com.epam.reportportal.service.ReportPortal.emitLog;
 
@@ -43,7 +44,7 @@ public class ReportPortalAppender extends AppenderSkeleton {
 			return;
 		}
 
-		emitLog((Function<String, SaveLogRQ>) itemUuid -> {
+		emitLog(itemUuid -> {
 			SaveLogRQ request = new SaveLogRQ();
 			request.setLevel(event.getLevel().toString());
 			request.setLogTime(new Date(event.getTimeStamp()));
@@ -88,10 +89,15 @@ public class ReportPortalAppender extends AppenderSkeleton {
 
 				} else {
 					// Plain string message is reported
-					if (ReportPortalAppender.this.layout == null) {
+					Layout myLayout = getLayout();
+					if (myLayout == null) {
 						logMessage = event.getRenderedMessage();
 					} else {
-						logMessage = ReportPortalAppender.this.layout.format(event).concat(throwable.toString());
+						if (myLayout instanceof PatternLayout) {
+							// a Log4j 1.2 multi-threaded bug workaround
+							myLayout = new PatternLayout(((PatternLayout) myLayout).getConversionPattern());
+						}
+						logMessage = myLayout.format(event).concat(throwable.toString());
 					}
 				}
 
