@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
-import java.util.function.Function;
 
 import static com.epam.reportportal.service.ReportPortal.emitLog;
 import static com.epam.reportportal.utils.MimeTypeDetector.detect;
@@ -48,6 +47,7 @@ import static rp.com.google.common.io.Files.asByteSource;
  * @author Dzmitry_Kavalets
  */
 @Plugin(name = "ReportPortalLog4j2Appender", category = "Core", elementType = "appender", printObject = true)
+@SuppressWarnings("unused")
 public class ReportPortalLog4j2Appender extends AbstractAppender {
 
 	protected ReportPortalLog4j2Appender(String name, Filter filter, Layout<? extends Serializable> layout) {
@@ -78,7 +78,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 			return;
 		}
 
-		emitLog((Function<String, SaveLogRQ>) itemUuid -> {
+		emitLog(itemUuid -> {
 			SaveLogRQ request = new SaveLogRQ();
 			request.setItemUuid(itemUuid);
 			request.setLogTime(new Date(event.getTimeMillis()));

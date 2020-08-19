@@ -18,9 +18,6 @@ package com.epam.ta.reportportal.log4j.appender;
 import com.epam.reportportal.message.HashMarkSeparatedMessageParser;
 import com.epam.reportportal.message.MessageParser;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author Andrei Varabyeu
  */
