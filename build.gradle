@@ -31,11 +31,10 @@ publishing {
 }
 
 dependencies {
+    api 'org.apache.logging.log4j:log4j-core:2.13.0'
+    api 'log4j:log4j:1.2.17'
     implementation 'com.epam.reportportal:client-java:5.0.6'
     implementation 'com.epam.reportportal:commons-model:5.0.0'
-    implementation 'log4j:log4j:1.2.17'
-    implementation 'org.apache.logging.log4j:log4j-api:2.13.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.13.0'
 }
 
 wrapper {
