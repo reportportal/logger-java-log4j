@@ -29,17 +29,17 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
-import rp.com.google.common.base.Charsets;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
 import static com.epam.reportportal.service.ReportPortal.emitLog;
 import static com.epam.reportportal.utils.MimeTypeDetector.detect;
-import static rp.com.google.common.io.Files.asByteSource;
+import static com.google.common.io.Files.asByteSource;
 
 /**
  * Log4j2 appender for report portal
@@ -114,7 +114,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 					message = rpMessage.getMessage();
 					byteSource = rpMessage.getData();
 				} else {
-					message = new String(getLayout().toByteArray(event), Charsets.UTF_8);
+					message = new String(getLayout().toByteArray(event), StandardCharsets.UTF_8);
 				}
 
 				if (null != byteSource) {
