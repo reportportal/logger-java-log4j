@@ -17,11 +17,11 @@ package com.epam.ta.reportportal.log4j.appender;
 
 import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
-import rp.com.google.common.base.Throwables;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class ReportPortalAppender extends AppenderSkeleton {
 				 */
 				StringBuilder throwable = new StringBuilder();
 				if (null != event.getThrowableInformation() && null != event.getThrowableInformation().getThrowable()) {
-					throwable.append(Throwables.getStackTraceAsString(event.getThrowableInformation().getThrowable()));
+					throwable.append(ExceptionUtils.getStackTrace(event.getThrowableInformation().getThrowable()));
 				}
 
 				// ReportPortalMessage is reported
