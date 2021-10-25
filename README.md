@@ -14,7 +14,7 @@
 
 Log4j provides a configuration opportunity via XML or properties files.
 
-#### XML config 
+### XML config 
 Just add a Report Portal appender into the `log4j.xml` configuration file.
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -34,7 +34,7 @@ Just add a Report Portal appender into the `log4j.xml` configuration file.
 </log4j:configuration>
 ```
 
-#### Property file config 
+### Property file config 
 
 For the `log4j.properties` file it could look like:
 ```properties
@@ -63,7 +63,7 @@ ReportPortal' agent logs can be hidden by setting `WARN` logging level for the f
 log4j.logger.com.epam.reportportal=WARN, reportportal
 ```
 
-#### Attaching files (Screenshots, videos, archives, reports etc.)
+### Attaching files (Screenshots, videos, archives, reports etc.)
 For the log4j case it is possible to send binary data in next ways.
 
 * by using a specific message wrapper
@@ -128,7 +128,7 @@ For the log4j case it is possible to send binary data in next ways.
     ReportPortal.emitLog("My message", "INFO", Calendar.getInstance().getTime(), file);
   ```
   
-#### Grayscale images
+### Grayscale images
 There is a client parameter in `reportportal.properties` with the `boolean` type value for screenshots sending in the `grayscale` or 
 `color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
 
@@ -147,7 +147,7 @@ rp.convertimage=true
 
 Log4j2 provides configuration options via XML or JSON files.
  
-#### XML
+### XML
 Update `log4j2.xml` as follows
 
 ```xml
@@ -169,7 +169,7 @@ Update `log4j2.xml` as follows
 </configuration>
 ```    
  
-#### JSON
+### JSON
 Update `log4j2.json` as follows
 ```JSON
 {
