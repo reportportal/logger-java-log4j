@@ -38,11 +38,15 @@ Just add a Report Portal appender into the `log4j.xml` configuration file.
 
 For the `log4j.properties` file it could look like:
 ```properties
+# Send logs into Report Portal
+log4j.rootLogger = INFO, reportportal
+
 log4j.appender.reportportal=com.epam.ta.reportportal.log4j.appender.ReportPortalAppender
 log4j.appender.reportportal.layout=org.apache.log4j.PatternLayout
 log4j.appender.reportportal.layout.ConversionPattern=[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n
 ```
 
+### Mute Report Portal internal logs
 ReportPortal' agent logs can be hidden by setting `WARN` logging level for the following package: `com.epam.reportportal`
 
 **log4j.xml example**
@@ -60,7 +64,7 @@ ReportPortal' agent logs can be hidden by setting `WARN` logging level for the f
 **log4j.properties example**
 ```properties
 # ... log4j appenders configuration
-log4j.logger.com.epam.reportportal=WARN, reportportal
+log4j.logger.com.epam.reportportal = WARN, reportportal
 ```
 
 ### Attaching files (Screenshots, videos, archives, reports etc.)
