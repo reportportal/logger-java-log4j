@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [5.1.1]
 ### Changed
 - Log4j version updated on 2.15.0 due to critical vulnerability
 
