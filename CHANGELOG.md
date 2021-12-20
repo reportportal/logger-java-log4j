@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Log4j version updated on 2.17.0 due to critical vulnerability
 
 ## [5.1.2]
 ### Changed
@@ -24,7 +26,7 @@
 - bumping up client version
 ### Fixed
 - Workarounded: A multi-threaded bug in Log4j 1.2 log formatting. When a log line mixes with
-  other nearest log lines. This fix affects logger performance, so it's common recommendation to
+  other nearest log lines. This fix affects logger performance, so it's a common recommendation to
   avoid using Log4j 1.2
 
 ## [5.0.2]
