@@ -99,7 +99,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 						byteSource = rpMessage.getData();
 						message = rpMessage.getMessage();
 					} else if (objectMessage instanceof File) {
-						final File file = (File) event.getMessage();
+						final File file = (File) objectMessage;
 						byteSource = new TypeAwareByteSource(asByteSource(file), detect(file));
 						message = "File reported";
 
