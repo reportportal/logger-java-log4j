@@ -25,7 +25,7 @@ project.ext.limits = [
         'instruction': 60,
         'branch'     : 53,
         'line'       : 65,
-        'complexity' : 60,
+        'complexity' : 45,
         'method'     : 49,
         'class'      : 90
 ]
