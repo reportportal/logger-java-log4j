@@ -1,11 +1,13 @@
 package com.epam.ta.reportportal.log4j.appender;
 
+import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.reportportal.service.Launch;
 import com.epam.reportportal.service.LoggingContext;
 import com.epam.reportportal.service.ReportPortalClient;
 import com.epam.reportportal.service.logs.LoggingSubscriber;
 import com.epam.reportportal.util.test.CommonUtils;
 import com.epam.ta.reportportal.ws.model.BatchSaveOperatingRS;
+import com.google.common.io.ByteSource;
 import io.reactivex.Maybe;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
@@ -22,12 +24,14 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.message.ObjectMessage;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -52,8 +56,7 @@ public class ReportPortalLog4j2AppenderTest {
 		builder.setPackages("com.epam.ta.reportportal.log4j.appender");
 		builder.setStatusLevel(Level.DEBUG);
 		builder.setConfigurationName("BuilderTest");
-		AppenderComponentBuilder appenderBuilder = builder.newAppender(
-				"ReportPortalAppender",
+		AppenderComponentBuilder appenderBuilder = builder.newAppender("ReportPortalAppender",
 				"ReportPortalLog4j2Appender"
 		);
 		appenderBuilder.add(builder.newLayout("PatternLayout")
@@ -97,22 +100,8 @@ public class ReportPortalLog4j2AppenderTest {
 		verify(client, timeout(100).times(0)).log(any(List.class));
 	}
 
-	@Test
-	@SuppressWarnings({ "unchecked", "ReactiveStreamsUnusedPublisher" })
-	public void test_binary_file_message_encoding() throws IOException {
-		mockBatchLogging(client);
-		LoggingContext.init(Maybe.just("launch_uuid"), Maybe.just("item_uuid"), client, scheduler);
-		String message = "test message";
-		Logger logger = createLoggerFor(this.getClass());
-		byte[] content;
-		try (InputStream is = ofNullable(Thread.currentThread()
-				.getContextClassLoader()
-				.getResourceAsStream("pug/unlucky.jpg")).orElseThrow(() -> new IllegalStateException(
-				"Unable to find test image file"))) {
-			content = IOUtils.toByteArray(is);
-		}
-		logger.info(String.format("RP_MESSAGE#FILE#%s#%s", "src/test/resources/pug/unlucky.jpg", message));
-		LoggingContext.complete();
+	@SuppressWarnings({ "unchecked" })
+	private void verify_binary_logging(long contentLength) throws IOException {
 		ArgumentCaptor<List<MultipartBody.Part>> captor = ArgumentCaptor.forClass(List.class);
 		verify(client).log(captor.capture());
 
@@ -128,6 +117,56 @@ public class ReportPortalLog4j2AppenderTest {
 		MediaType binaryPartType = binaryPart.contentType();
 		assertThat(binaryPartType, notNullValue());
 		assertThat(binaryPartType.toString(), equalTo("image/jpeg"));
-		assertThat(binaryPart.contentLength(), equalTo((long) content.length));
+		assertThat(binaryPart.contentLength(), equalTo(contentLength));
+	}
+
+	@Test
+	@SuppressWarnings({ "ReactiveStreamsUnusedPublisher" })
+	public void test_binary_file_message_encoding() throws IOException {
+		mockBatchLogging(client);
+		LoggingContext.init(Maybe.just("launch_uuid"), Maybe.just("item_uuid"), client, scheduler);
+		String message = "test message";
+		Logger logger = createLoggerFor(this.getClass());
+		byte[] content;
+		try (InputStream is = ofNullable(Thread.currentThread()
+				.getContextClassLoader()
+				.getResourceAsStream("pug/unlucky.jpg")).orElseThrow(() -> new IllegalStateException(
+				"Unable to find test image file"))) {
+			content = IOUtils.toByteArray(is);
+		}
+		logger.info(String.format("RP_MESSAGE#FILE#%s#%s", "src/test/resources/pug/unlucky.jpg", message));
+		LoggingContext.complete();
+		verify_binary_logging(content.length);
+	}
+
+	@Test
+	@SuppressWarnings({ "ReactiveStreamsUnusedPublisher" })
+	public void test_reportportal_message_logging() throws IOException {
+		mockBatchLogging(client);
+		LoggingContext.init(Maybe.just("launch_uuid"), Maybe.just("item_uuid"), client, scheduler);
+		String messageText = "test message";
+		Logger logger = createLoggerFor(this.getClass());
+		byte[] content;
+		try (InputStream is = ofNullable(Thread.currentThread()
+				.getContextClassLoader()
+				.getResourceAsStream("pug/unlucky.jpg")).orElseThrow(() -> new IllegalStateException(
+				"Unable to find test image file"))) {
+			content = IOUtils.toByteArray(is);
+		}
+		ReportPortalMessage message = new ReportPortalMessage(ByteSource.wrap(content), "image/jpeg", messageText);
+		logger.info(new ObjectMessage(message));
+		LoggingContext.complete();
+		verify_binary_logging(content.length);
+	}
+
+	@Test
+	@SuppressWarnings({ "ReactiveStreamsUnusedPublisher" })
+	public void test_file_logging() throws IOException {
+		mockBatchLogging(client);
+		LoggingContext.init(Maybe.just("launch_uuid"), Maybe.just("item_uuid"), client, scheduler);
+		Logger logger = createLoggerFor(this.getClass());
+		logger.info(new ObjectMessage(new File("src/test/resources/pug/unlucky.jpg")));
+		LoggingContext.complete();
+		verify_binary_logging(90404L);
 	}
 }
