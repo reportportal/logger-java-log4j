@@ -55,8 +55,8 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 	}
 
 	@PluginFactory
-	public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name, @PluginElement("filter") Filter filter,
-			@PluginElement("layout") Layout<? extends Serializable> layout) {
+	public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name,
+			@PluginElement("filter") Filter filter, @PluginElement("layout") Layout<? extends Serializable> layout) {
 
 		if (name == null) {
 			LOGGER.error("No name provided for ReportPortalLog4j2Appender");
@@ -75,6 +75,11 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 
 		final LogEvent event = logEvent.toImmutable();
 		if (null == event.getMessage()) {
+			return;
+		}
+
+		//make sure we are not logging themselves
+		if (Util.isInternal(event.getLoggerName())) {
 			return;
 		}
 
@@ -99,7 +104,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 						byteSource = rpMessage.getData();
 						message = rpMessage.getMessage();
 					} else if (objectMessage instanceof File) {
-						final File file = (File) event.getMessage();
+						final File file = (File) objectMessage;
 						byteSource = new TypeAwareByteSource(asByteSource(file), detect(file));
 						message = "File reported";
 
