@@ -6,6 +6,8 @@
 ### Changed
 - Client version updated on [5.1.11](https://github.com/reportportal/client-java/releases/tag/5.1.11), by @HardNorth
 - Log4j version updated on 2.17.2, by @HardNorth
+### Fixed
+- A bug with wrong object casting, by @jusski
 
 ## [5.1.4]
 ### Changed
