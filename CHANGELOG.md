@@ -1,9 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Logging issues skip, by @HardNorth
 ### Changed
-- Client version updated on [5.1.11](https://github.com/reportportal/client-java/releases/tag/5.1.11)
-- Log4j version updated on 2.17.2
+- Client version updated on [5.1.11](https://github.com/reportportal/client-java/releases/tag/5.1.11), by @HardNorth
+- Log4j version updated on 2.17.2, by @HardNorth
 
 ## [5.1.4]
 ### Changed
