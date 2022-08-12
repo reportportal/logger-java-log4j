@@ -179,6 +179,7 @@ Update `log4j2.json` as follows
 ```JSON
 {
   "configuration": {
+    "packages": "com.epam.ta.reportportal.log4j.appender",
     "properties": {
       "property": {
         "name": "pattern",
