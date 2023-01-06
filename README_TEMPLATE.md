@@ -150,9 +150,8 @@ rp.convertimage=true
 
 Possible values:
 
-`true` - all images will be converted into `grayscale`
-
-`false` - all images will be as `color`
+* `true` - all images will be converted into `grayscale`
+* `false` - all images will be as `color`
 
 ## JDK Logging / java.util.logger (JUL)
 Due to low popularity of JUL logger, Report Portal does not have adapter for it. Bridge to SLF4J or Log4j may be used in this case: 
