@@ -7,7 +7,6 @@
 [![Build with Love](https://img.shields.io/badge/build%20with-❤%EF%B8%8F%E2%80%8D-lightgrey.svg)](http://reportportal.io?style=flat)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-* [Configuration - log4j](https://github.com/reportportal/logger-java-log4j#configuration---log4j)
 * [Configuration - log4j2](https://github.com/reportportal/logger-java-log4j#configuration---log4j2)
 
 The latest version: $LATEST_VERSION. Please use `Maven Central` link above to get the library.
