@@ -102,8 +102,10 @@ ReportPortal's agent logs can be hided by increasing logging level for the follo
 
 ```xml
 
-<Logger name="rp" level="WARN"/>
-<Logger name="com.epam.reportportal" level="WARN"/>
+<loggers>
+    <Logger name="rp" level="WARN"/>
+    <Logger name="com.epam.reportportal" level="WARN"/>
+</loggers>
 ```
 
 ### Attaching files (Screenshots, videos, archives, reports etc.)
@@ -112,19 +114,27 @@ For the log4j case it is possible to send binary data in next ways.
 
 * by using a specific message wrapper
 
-  ```java
-  private static Logger logger;
-  /*
-   * Path to screenshot file
-   */
-  public String screenshot_file_path = "demoScreenshoot.png";
-  /*
-   * Message for attached screenshot
-   */
-  public String rp_message = "test message for Report Portal";
-  ReportPortalMessage message = new ReportPortalMessage(new File(screenshot_file_path), rp_message);
-  logger.info(message);
-  ```
+```java
+public class Test {
+	private static final Logger LOGGER = LogManager.getLogger(Test.class);
+
+	/*
+	 * Path to screenshot file
+	 */
+	public static final String screenshot_file_path = "demoScreenshoot.png";
+
+	@Test
+	public void test() {
+		/*
+		 * Message for attached screenshot
+		 */
+		public String rp_message = "test message for Report Portal";
+		ReportPortalMessage message = new ReportPortalMessage(new File(screenshot_file_path), rp_message);
+		LOGGER.info(message);
+	}
+}
+```
+
 * sending a File object as a log4j log message. In this case a log4j Report Portal appender sends a log message which
   will contain the sending file and the string message `Binary data reported`.
 
@@ -133,52 +143,62 @@ For the log4j case it is possible to send binary data in next ways.
 
   in this case a log message should have the next format:
 
-  ```
-  RP_MESSAGE#FILE#FILENAME#MESSAGE_TEST
-  RP_MESSAGE#BASE64#BASE_64_REPRESENTATION#MESSAGE_TEST
-  ```
-  > RP_MESSAGE - message header
+```
+RP_MESSAGE#FILE#FILENAME#MESSAGE_TEST
+RP_MESSAGE#BASE64#BASE_64_REPRESENTATION#MESSAGE_TEST
+```
 
-  > FILE, BASE64 - attaching data representation type
+> RP_MESSAGE - message header
 
-  > FILENAME, BASE_64_REPRESENTATION - path to sending file/ base64 representation of sending data
+> FILE, BASE64 - attaching data representation type
 
-  > MESSAGE_TEST - string log message
+> FILENAME, BASE_64_REPRESENTATION - path to sending file/ base64 representation of sending data
 
-  ```java
-  
-  private static final String JSON_FILE_PATH = "files/file.json"
-  
-  @Test
-  public void logJsonBase64() throws IOException {
-      /* here we are logging some binary data as BASE64 string */
-      LOGGER.info(
-          "RP_MESSAGE#BASE64#{}#{}",
-          BaseEncoding.base64().encode(Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).read()),
-          "I'm logging content via BASE64"
-      );
-  }
-      
-  @Test
-  public void logJsonFile() throws IOException, InterruptedException {
-      /* here we are logging some binary data as file (useful for selenium) */
-      File file = File.createTempFile("rp-test", ".json");
-      Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).copyTo(Files.asByteSink(file));
-      LOGGER.info("RP_MESSAGE#FILE#{}#{}", file.getAbsolutePath(), "I'm logging content via temp file");
-  }
-  ```
+> MESSAGE_TEST - string log message
+
+```java
+public class Test {
+	private static final Logger LOGGER = LogManager.getLogger(Test.class);
+
+	private static final String JSON_FILE_PATH = "files/file.json";
+
+	@Test
+	public void logJsonBase64() {
+		/* here we are logging some binary data as BASE64 string */
+		LOGGER.info(
+				"RP_MESSAGE#BASE64#{}#{}",
+				BaseEncoding.base64().encode(Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).read()),
+				"I'm logging content via BASE64"
+		);
+	}
+
+	@Test
+	public void logJsonFile() {
+		/* here we are logging some binary data as file (useful for selenium) */
+		File file = File.createTempFile("rp-test", ".json");
+		Resources.asByteSource(Resources.getResource(JSON_FILE_PATH)).copyTo(Files.asByteSink(file));
+		LOGGER.info("RP_MESSAGE#FILE#{}#{}", file.getAbsolutePath(), "I'm logging content via temp file");
+	}
+}
+```
 
 * Explicit logging. You can call the ReportPortal logger explicitly. To do this consider the following example:
-  ```java
-    File file = new File("my path to file");
-    ReportPortal.emitLog("My message", "INFO", Calendar.getInstance().getTime(), file);
-  ```
+
+```java
+public class Test {
+	@Test
+	public void log() {
+		File file = new File("my path to file");
+		ReportPortal.emitLog("My message", "INFO", Calendar.getInstance().getTime(), file);
+	}
+}
+```
 
 ### Grayscale images
 
 There is a client parameter in `reportportal.properties` with the `boolean` type value for screenshots sending in
 the `grayscale` or
-`color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
+`color` view. By default, it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
 
 **reportportal.properties**
 
