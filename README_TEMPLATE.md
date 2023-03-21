@@ -1,4 +1,5 @@
-# log4j-integration
+# Log4j2 appender for Report Portal
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.epam.reportportal/logger-java-log4j.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.epam.reportportal%22%20AND%20a:%22logger-java-log4j%22)
 [![CI Build](https://github.com/reportportal/logger-java-log4j/actions/workflows/ci.yml/badge.svg)](https://github.com/reportportal/logger-java-log4j/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/reportportal/logger-java-log4j/branch/develop/graph/badge.svg?token=iEy7fURz1P)](https://codecov.io/gh/reportportal/logger-java-log4j)
@@ -7,38 +8,66 @@
 [![Build with Love](https://img.shields.io/badge/build%20with-❤%EF%B8%8F%E2%80%8D-lightgrey.svg)](http://reportportal.io?style=flat)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-* [Configuration - log4j2](https://github.com/reportportal/logger-java-log4j#configuration---log4j2)
-
 The latest version: $LATEST_VERSION. Please use `Maven Central` link above to get the library.
 
-## Configuration - log4j2
+## Dependencies
+
+To start using Report Portal log appending you need to include this library into your project dependencies according to
+your build system.
+
+### Maven
+
+Add this section into `<dependecies>` section:
+
+```xml
+
+<dependency>
+    <groupId>com.epam.reportportal</groupId>
+    <artifactId>logger-java-log4j</artifactId>
+    <version>$LATEST_VERSION</version>
+    <scope>test</scope>
+</dependency>
+```
+
+### Gradle
+
+Add this line into `dependecies` block:
+
+```groovy
+testImplementation 'com.epam.reportportal:logger-java-log4j:$LATEST_VERSION'
+```
+
+## Configuration
 
 Log4j2 provides configuration options via XML or JSON files.
- 
+
 ### XML
+
 Update `log4j2.xml` as follows
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration packages="com.epam.ta.reportportal.log4j.appender">
-   <properties>
-      <property name="pattern">[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n</property>
-   </properties>
-   <appenders>
-      <ReportPortalLog4j2Appender name="ReportPortalAppender">
-         <PatternLayout pattern="${pattern}" />
-      </ReportPortalLog4j2Appender>
-   </appenders>
-   <loggers>
-      <root level="all">
-         <appender-ref ref="ReportPortalAppender"/>
-      </root>
-   </loggers>
+    <properties>
+        <property name="pattern">[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n</property>
+    </properties>
+    <appenders>
+        <ReportPortalLog4j2Appender name="ReportPortalAppender">
+            <PatternLayout pattern="${pattern}"/>
+        </ReportPortalLog4j2Appender>
+    </appenders>
+    <loggers>
+        <root level="all">
+            <appender-ref ref="ReportPortalAppender"/>
+        </root>
+    </loggers>
 </configuration>
 ```    
- 
+
 ### JSON
+
 Update `log4j2.json` as follows
+
 ```JSON
 {
   "configuration": {
@@ -68,13 +97,17 @@ Update `log4j2.json` as follows
   }
 }
 ```
+
 ReportPortal's agent logs can be hided by increasing logging level for the following package:
+
 ```xml
+
 <Logger name="rp" level="WARN"/>
 <Logger name="com.epam.reportportal" level="WARN"/>
 ```
 
 ### Attaching files (Screenshots, videos, archives, reports etc.)
+
 For the log4j case it is possible to send binary data in next ways.
 
 * by using a specific message wrapper
@@ -92,9 +125,11 @@ For the log4j case it is possible to send binary data in next ways.
   ReportPortalMessage message = new ReportPortalMessage(new File(screenshot_file_path), rp_message);
   logger.info(message);
   ```
-* sending a File object as a log4j log message. In this case a log4j Report Portal appender sends a log message which will contain the sending file and the string message `Binary data reported`.
+* sending a File object as a log4j log message. In this case a log4j Report Portal appender sends a log message which
+  will contain the sending file and the string message `Binary data reported`.
 
-* adding to the log message additional text information which specifies the attaching file location or the base64 representation of the sending file.
+* adding to the log message additional text information which specifies the attaching file location or the base64
+  representation of the sending file.
 
   in this case a log message should have the next format:
 
@@ -140,10 +175,13 @@ For the log4j case it is possible to send binary data in next ways.
   ```
 
 ### Grayscale images
-There is a client parameter in `reportportal.properties` with the `boolean` type value for screenshots sending in the `grayscale` or
+
+There is a client parameter in `reportportal.properties` with the `boolean` type value for screenshots sending in
+the `grayscale` or
 `color` view. By default it is set as `true` and all pictures for Report Portal will be in the `grayscale` format.
 
 **reportportal.properties**
+
 ```properties
 rp.convertimage=true
 ```
@@ -154,12 +192,14 @@ Possible values:
 * `false` - all images will be as `color`
 
 ## JDK Logging / java.util.logger (JUL)
-Due to low popularity of JUL logger, Report Portal does not have adapter for it. Bridge to SLF4J or Log4j may be used in this case: 
+
+Due to low popularity of JUL logger, Report Portal does not have adapter for it. Bridge to SLF4J or Log4j may be used in
+this case:
 [Log4j2 JDK Logging Adapter](https://logging.apache.org/log4j/2.0/log4j-jul/index.html)
 
 ## Troubleshooting
 
 In some cases `log4j` can't find all enabled Appenders.
 
-please follow with Shaded Plugin to avoid this issue: 
+please follow with Shaded Plugin to avoid this issue:
 https://github.com/edwgiz/maven-shaded-log4j-transformer
