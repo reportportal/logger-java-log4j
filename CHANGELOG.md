@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [5.1.7]
 ### Added
 - Plugin location by annotation processor, by @valfirst
 ### Changed
