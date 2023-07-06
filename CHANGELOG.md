@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Plugin location by annotation processor, by @valfirst
+### Changed
+- Client version updated on [5.1.21](https://github.com/reportportal/client-java/releases/tag/5.1.21), by @HardNorth
 
 ## [5.1.6]
 ### Changed
