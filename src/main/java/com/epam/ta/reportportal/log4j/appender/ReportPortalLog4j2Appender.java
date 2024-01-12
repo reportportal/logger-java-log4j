@@ -17,6 +17,7 @@ package com.epam.ta.reportportal.log4j.appender;
 
 import com.epam.reportportal.message.ReportPortalMessage;
 import com.epam.reportportal.message.TypeAwareByteSource;
+import com.epam.reportportal.utils.files.Utils;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -38,8 +39,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.epam.reportportal.service.ReportPortal.emitLog;
-import static com.epam.reportportal.utils.MimeTypeDetector.detect;
-import static com.google.common.io.Files.asByteSource;
 
 /**
  * Log4j2 appender for report portal
@@ -105,7 +104,7 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 						message = rpMessage.getMessage();
 					} else if (objectMessage instanceof File) {
 						final File file = (File) objectMessage;
-						byteSource = new TypeAwareByteSource(asByteSource(file), detect(file));
+						byteSource = Utils.getFile(file);
 						message = "File reported";
 
 					} else {
