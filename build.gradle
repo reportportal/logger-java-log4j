@@ -37,7 +37,7 @@ repositories {
 dependencies {
     implementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
     annotationProcessor "org.apache.logging.log4j:log4j-core:${log4j_version}"
-    implementation 'com.epam.reportportal:client-java:5.1.22'
+    implementation 'com.epam.reportportal:client-java:5.2.0'
     implementation 'com.epam.reportportal:commons-model:5.0.0'
 
     testImplementation 'com.epam.reportportal:agent-java-test-utils:0.0.2'
@@ -53,6 +53,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${project.mockito_version}"
     testImplementation "org.mockito:mockito-junit-jupiter:${project.mockito_version}"
     testImplementation 'org.apache.commons:commons-io:1.3.2'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
 
 test {
