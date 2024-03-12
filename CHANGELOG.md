@@ -1,12 +1,15 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Client version updated on [5.2.5](https://github.com/reportportal/client-java/releases/tag/5.2.5), by @HardNorth
+- `client-java` and `og4j-core` dependencies marked as `compileOnly` to force users specify their own dependencies, by @HardNorth
 
 ## [5.2.1]
 ### Changed
 - Client version updated on [5.2.4](https://github.com/reportportal/client-java/releases/tag/5.2.4), by @HardNorth
 ### Removed
-- `commons-model` dependency to rely on `clinet-java` exclusions in security fixes, by @HardNorth
+- `commons-model` dependency to rely on `client-java` exclusions in security fixes, by @HardNorth
 
 ## [5.2.0]
 ### Changed
