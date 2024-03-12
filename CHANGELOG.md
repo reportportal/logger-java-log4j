@@ -3,7 +3,7 @@
 ## [Unreleased]
 ### Changed
 - Client version updated on [5.2.5](https://github.com/reportportal/client-java/releases/tag/5.2.5), by @HardNorth
-- `client-java` and `og4j-core` dependencies marked as `compileOnly` to force users specify their own dependencies, by @HardNorth
+- `client-java` and `log4j-core` dependencies marked as `compileOnly` to force users specify their own dependencies, by @HardNorth
 
 ## [5.2.1]
 ### Changed
