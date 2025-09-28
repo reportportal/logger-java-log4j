@@ -8,7 +8,7 @@
 [![Build with Love](https://img.shields.io/badge/build%20with-❤%EF%B8%8F%E2%80%8D-lightgrey.svg)](http://reportportal.io?style=flat)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-The latest version: 5.3.0. Please use `Maven Central` link above to get the library.
+The latest version: 5.4.0. Please use `Maven Central` link above to get the library.
 
 ## Dependencies
 
@@ -24,7 +24,7 @@ Add this section into `<dependecies>` section:
 <dependency>
     <groupId>com.epam.reportportal</groupId>
     <artifactId>logger-java-log4j</artifactId>
-    <version>5.3.0</version>
+    <version>5.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -34,7 +34,7 @@ Add this section into `<dependecies>` section:
 Add this line into `dependecies` block:
 
 ```groovy
-testImplementation 'com.epam.reportportal:logger-java-log4j:5.3.0'
+testImplementation 'com.epam.reportportal:logger-java-log4j:5.4.0'
 ```
 
 ## Configuration
