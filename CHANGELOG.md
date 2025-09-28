@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [5.4.0]
 ### Changed
 - Client version updated to [5.4.3](https://github.com/reportportal/client-java/releases/tag/5.4.3), by @HardNorth
 - Switch on use of `Instant` class instead of `Date` to get more timestamp precision, by @HardNorth
