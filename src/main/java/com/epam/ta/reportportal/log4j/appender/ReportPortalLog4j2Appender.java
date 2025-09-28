@@ -35,7 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import static com.epam.reportportal.service.ReportPortal.emitLog;
@@ -54,8 +54,8 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 	}
 
 	@PluginFactory
-	public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name,
-			@PluginElement("filter") Filter filter, @PluginElement("layout") Layout<? extends Serializable> layout) {
+	public static ReportPortalLog4j2Appender createAppender(@PluginAttribute("name") String name, @PluginElement("filter") Filter filter,
+			@PluginElement("layout") Layout<? extends Serializable> layout) {
 
 		if (name == null) {
 			LOGGER.error("No name provided for ReportPortalLog4j2Appender");
@@ -82,10 +82,13 @@ public class ReportPortalLog4j2Appender extends AbstractAppender {
 			return;
 		}
 
+		org.apache.logging.log4j.core.time.Instant log4jInstant = logEvent.getInstant();
+		final Instant time = Instant.ofEpochSecond(log4jInstant.getEpochSecond(), log4jInstant.getNanoOfSecond());
+
 		emitLog(itemUuid -> {
 			SaveLogRQ request = new SaveLogRQ();
 			request.setItemUuid(itemUuid);
-			request.setLogTime(new Date(event.getTimeMillis()));
+			request.setLogTime(time);
 			request.setLevel(event.getLevel().name());
 
 			Message eventMessage = event.getMessage();
